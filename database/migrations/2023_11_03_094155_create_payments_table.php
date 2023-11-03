@@ -21,6 +21,7 @@ class CreatePaymentsTable extends Migration
             $table->boolean('status');
             $table->ipAddress('paid_ip');
             $table->timestamps();
+            $table->softDeletes($column = 'deleted_at', $precision = 0);
         });
     }
 
