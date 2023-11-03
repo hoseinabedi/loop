@@ -18,7 +18,7 @@ class CreateOrdersTable extends Migration
             $table->foreignId('customer_id')->constrained('customers');
             $table->json('products');
             $table->decimal('total_price', 8, 2);
-            $table->boolean('payed')->default(false);
+            $table->boolean('paid')->default(false);
             $table->timestamps();
             $table->softDeletes($column = 'deleted_at', $precision = 0);
         });
