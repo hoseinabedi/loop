@@ -83,6 +83,7 @@ class ImportData extends Command
             echo "\n".count($errors) . " records not imported in customers table! check the errors below:\n";
             print_r($errors);
         }
+        
         echo "\n"."Operations completed successfully!";
         return 0;
     }
