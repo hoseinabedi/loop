@@ -17,3 +17,12 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::group(['prefix' => '/orders'], function () {
+    Route::get('/', 'App\Http\Controllers\OrderController@index');
+    Route::get('/show/{order}', 'App\Http\Controllers\OrderController@show');
+    Route::post('/save', 'App\Http\Controllers\OrderController@store');
+    Route::put('/update/{order}', 'App\Http\Controllers\OrderController@update');
+    Route::put('/{order}/add', 'App\Http\Controllers\OrderController@addProductToOrder');
+    Route::delete('/delete/{order}', 'App\Http\Controllers\OrderController@destroy');
+});
