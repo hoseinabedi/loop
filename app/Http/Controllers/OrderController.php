@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Order;
-use App\Models\Payment;
-use Illuminate\Support\Facades\Http;
 
 class OrderController extends Controller
 {
@@ -98,13 +96,14 @@ class OrderController extends Controller
         }
         $pay = ["order_id" => $order->id, "customer_email" => $order->customer->email, "value" => $order->total_price];
         $payStatus = false;
-        $response = json_decode(Http::post('https://superpay.view.agentur-loop.com/pay', $pay)->body());
+        $payment = new PaymentController();
+        $response = $payment->paymentProvider("Super Payment Provider", $pay);
         if($response->message == "Payment Successful"){
             $order->paid = true;
             $order->update();
             $payStatus = true;
         }
-        Payment::create([
+        $payment->addPayment([
             "order_id" => $order->id,
             "customer_id" => $order->customer->id,
             "total_price" => $order->total_price,
@@ -114,7 +113,5 @@ class OrderController extends Controller
         ]);
         return \Response(["status" => "success", "result" => $response], 200);
     }
-
-    
     
 }
