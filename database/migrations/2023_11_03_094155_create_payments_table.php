@@ -19,6 +19,7 @@ class CreatePaymentsTable extends Migration
             $table->foreignId('customer_id')->constrained('customers');
             $table->decimal('total_price', 8, 2);
             $table->boolean('status');
+            $table->string('response_message');
             $table->ipAddress('paid_ip');
             $table->timestamps();
             $table->softDeletes($column = 'deleted_at', $precision = 0);
