@@ -55,11 +55,12 @@ Place your order and complete the payment process with some simple error handlin
 
 To deploy the project to a production server, you can use the following steps:
 
-1. Generate a deployment package:
+1. Caching routes and configurations:
     ```
-    php artisan package:make
+    php artisan route:cache
+    php artisan config:cache
     ```
-    This will generate a deployment package in the dist directory.
+    This will improve the performance of project.
 2. Copy the deployment package to the production server.
 3. Unpack the deployment package on the production server.
 4. Update the .env file on the production server with the production database credentials.
