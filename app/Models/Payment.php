@@ -16,6 +16,7 @@ class Payment extends Model
         'customer_id',
         'total_price',
         'status',
+        'response_message',
         'paid_ip',
     ];
 
