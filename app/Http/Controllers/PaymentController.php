@@ -32,7 +32,7 @@ class PaymentController extends Controller
                 $response = json_decode(Http::post('https://superpay.view.agentur-loop.com/pay', $payInfo)->body());
                 break;
             default:
-                $response = ["message" => "Invalid payment provider ($provider)"];
+                $response = (object)["message" => "Invalid payment provider ($provider)"];
         }
         return $response;
     }
