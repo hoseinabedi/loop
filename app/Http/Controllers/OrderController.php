@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\Payment;
+use Illuminate\Support\Facades\Http;
 
 class OrderController extends Controller
 {
@@ -86,14 +88,33 @@ class OrderController extends Controller
     /** 
     * Pay order
     *
-    * @param  \Illuminate\Http\Request  $request
+    * @param  \Illuminate\Http\Request  $request  
     * @param  object  $order
     * @return \Illuminate\Http\Response
     */
     public function pay(Request $request, Order $order){
-        $order->paid = true;
-        $order->update();
-        return \Response(["status" => "success", "result" => $order], 200);
+        if($order->paid){
+            return \Response(["status" => "error", "result" => "Order is already paid!"], 400);
+        }
+        $pay = ["order_id" => $order->id, "customer_email" => $order->customer->email, "value" => $order->total_price];
+        $payStatus = false;
+        $response = json_decode(Http::post('https://superpay.view.agentur-loop.com/pay', $pay)->body());
+        if($response->message == "Payment Successful"){
+            $order->paid = true;
+            $order->update();
+            $payStatus = true;
+        }
+        Payment::create([
+            "order_id" => $order->id,
+            "customer_id" => $order->customer->id,
+            "total_price" => $order->total_price,
+            "status" => $payStatus,
+            "response_message" => $response->message,
+            "paid_ip" => $request->ip()
+        ]);
+        return \Response(["status" => "success", "result" => $response], 200);
     }
+
+    
     
 }
