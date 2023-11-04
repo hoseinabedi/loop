@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\Product;
 
 class OrderController extends Controller
 {
@@ -27,7 +28,7 @@ class OrderController extends Controller
         $order = new Order();
         $order->customer_id = $request->customer_id;
         $order->products = json_encode($request->products);
-        $order->total_price = $request->total_price;
+        $order->total_price = (new PaymentController)->calcPrice($request->products);
         $order->save();
         return \Response(["status" => "success", "result" => $order], 200);
     }
@@ -50,6 +51,11 @@ class OrderController extends Controller
     * @return \Illuminate\Http\Response
     */
     public function update(Request $request, Order $order){
+        if($request->products || $request->total_price){
+            $request->merge([
+                'total_price' => (new PaymentController)->calcPrice(isset($request->products) ? $request->products : $order->products),
+            ]);
+        }
         $order->update($request->all());
         return \Response(["status" => "success", "result" => $order], 200);
     }
@@ -77,6 +83,7 @@ class OrderController extends Controller
             $prevOrders = json_decode($order->products, true);
             $newProduct = ["product_id" => (int)$request->product_id, "amount" => 1];
             $order->products = array_merge($prevOrders, [$newProduct]);
+            $order->total_price = (new PaymentController)->calcPrice($order->products);
             $order->update();
             return \Response(["status" => "success", "result" => $order], 200);
         }

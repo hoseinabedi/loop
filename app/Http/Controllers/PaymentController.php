@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Payment;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -35,5 +36,19 @@ class PaymentController extends Controller
                 $response = (object)["message" => "Invalid payment provider ($provider)"];
         }
         return $response;
+    }
+
+    /**
+     * Calculate the total price of the order
+     * 
+     * @param array $products
+     * @return float $total_price
+     */
+    public function calcPrice($products){
+        $total_price = 0;
+        foreach ($products as $product){
+            $total_price += Product::find($product["product_id"])->price * $product["amount"];
+        }
+        return $total_price;
     }
 }
