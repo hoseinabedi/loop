@@ -25,4 +25,5 @@ Route::group(['prefix' => '/orders'], function () {
     Route::put('/update/{order}', 'App\Http\Controllers\OrderController@update');
     Route::put('/{order}/add', 'App\Http\Controllers\OrderController@addProductToOrder');
     Route::delete('/delete/{order}', 'App\Http\Controllers\OrderController@destroy');
+    Route::get('/{order}/pay', 'App\Http\Controllers\OrderController@pay');
 });
