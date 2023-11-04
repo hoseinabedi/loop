@@ -97,7 +97,7 @@ class OrderController extends Controller
         $pay = ["order_id" => $order->id, "customer_email" => $order->customer->email, "value" => $order->total_price];
         $payStatus = false;
         $payment = new PaymentController();
-        $response = $payment->paymentProvider("Super Payment Provider", $pay);
+        $response = $payment->paymentProvider($request->provider, $pay);
         if($response->message == "Payment Successful"){
             $order->paid = true;
             $order->update();
