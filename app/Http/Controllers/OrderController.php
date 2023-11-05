@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Order;
-use App\Models\Product;
 
 class OrderController extends Controller
 {
@@ -39,7 +38,9 @@ class OrderController extends Controller
     * @param  int  $order
     * @return \Illuminate\Http\Response
     */
-    public function show(Order $order){
+    public function show($order){
+        $order = Order::find($order);
+        if(!$order) return \Response(["status" => "error", "result" => "Order not found!"], 404);
         return \Response(["status" => "success", "result" => $order], 200);
     }
 
